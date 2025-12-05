@@ -37,6 +37,9 @@ namespace InfoInfo2025.Models
         public bool Display { get; set; }
 
 
+        public ICollection<Text> Texts { get; set; } = new List<Text>();
+
+
         public Category()
         {
             Active = true;

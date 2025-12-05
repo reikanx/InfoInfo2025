@@ -55,5 +55,9 @@ namespace InfoInfo2025.Models
         [MaxLength(128)]
         [FileExtensions(Extensions = ".jpg,.png,.gif", ErrorMessage ="Dozwolone rozszerzenia plików to: .jpg, .png, .gif.")]
         public string Photo { get; set; }
+
+
+        public ICollection<Text> Texts { get; set; } = new List<Text>();
+        public ICollection<Opinion> Opinions { get; set; } = new List<Opinion>();
     }
 }

@@ -46,8 +46,12 @@ namespace InfoInfo2025.Models
 
         [Required]
         [Display(Name = "Autor komentarza:")]
-        public string UserId {get; set;}
-        
+        public string? UserId {get; set;}
+
+
+        [ForeignKey("UserId")]
+        public AppUser? Author { get; set; }
+
     }
 
     public enum Rating

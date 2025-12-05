@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfoInfo2025.Models
 {
@@ -60,9 +61,19 @@ namespace InfoInfo2025.Models
         [Display(Name = "Kategoria tekstu:")]
         public int CategoryId { get; set; }
 
+        [ForeignKey("CategoryId")]
+        public Category? Category { get; set; }
+
 
         [Display(Name = "Autor tekstu:")]
         public string? UserId { get; set; }
+
+
+        [ForeignKey("UserId")]
+        public Category?Author { get; set; }
+
+
+        public ICollection<Opinion> Opinions { get; set; } = new List<Opinion>();
     }
 
 }
