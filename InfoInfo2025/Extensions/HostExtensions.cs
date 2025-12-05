@@ -1,0 +1,26 @@
+﻿using InfoInfo2025.Data;
+
+namespace InfoInfo2025.Extensions
+{
+    public static class HostExtensions
+    {
+
+        public static async Task SeedData(this IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    await InfoSeeder.Initialize(services);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Wystąpił błąd poczas wypełniania bazy danych.");
+                }
+            }
+        }
+
+    }
+}
