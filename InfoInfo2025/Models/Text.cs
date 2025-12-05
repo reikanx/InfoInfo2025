@@ -70,7 +70,7 @@ namespace InfoInfo2025.Models
 
 
         [ForeignKey("UserId")]
-        public Category?Author { get; set; }
+        public AppUser ?Author { get; set; }
 
 
         public ICollection<Opinion> Opinions { get; set; } = new List<Opinion>();
