@@ -1,6 +1,6 @@
 ﻿using InfoInfo2025.Data;
 using InfoInfo2025.Models;
-using Microsoft.AspNetCore.Authorization;
+using InfoInfo2025.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +17,29 @@ namespace InfoInfo2025.Controllers
         }
 
         // GET: Texts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int PageNumber = 1)
         {
-            var applicationDbContext = _context.Texts.Include(t => t.Author).Include(t => t.Category);
-            return View(await applicationDbContext.ToListAsync());
+            TextIndexViewModel textIndexViewModel = new()
+            {
+                TextList = new()
+            };
+
+            textIndexViewModel.TextList.TextCount = _context.Texts
+                .Where(t => t.Active == true)
+                .Count();
+
+            textIndexViewModel.TextList.PageNumber = PageNumber;
+
+            textIndexViewModel.Texts = await _context.Texts
+                .Include(t => t.Category)
+                .Include(t => t.Author)
+                .Where(t => t.Active == true)
+                .OrderByDescending(t => t.AddedDate)
+                .Skip((PageNumber - 1) * textIndexViewModel.TextList.PageSize)
+                .Take(textIndexViewModel.TextList.PageSize)
+                .ToListAsync();
+
+            return View(textIndexViewModel);
         }
 
         // GET: List of Texts

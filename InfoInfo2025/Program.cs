@@ -40,6 +40,16 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "pages",
+    pattern: "Teksty informatyczne/Strona{PageNumber}",
+    defaults: new { controller = "Texts", Action = "Index" });
+
+app.MapControllerRoute(
+    name: "texts",
+    pattern: "Teksty informatyczne",
+    defaults: new { controller = "Texts", Action = "Index" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
