@@ -22,7 +22,7 @@ namespace InfoInfo2025.Models
 
 
         [Required(ErrorMessage = "Proszę podać nazwę ikony.")]
-        [Display(Name = "Nazwa kategorii:")]
+        [Display(Name = "Ikona kategorii:")]
         [StringLength(30, ErrorMessage = "Nazwa ikony kategorii nie może być dłuższa niż 30 znaków.")]
         public string Icon { get; set; } = string.Empty;
 

@@ -53,7 +53,7 @@ namespace InfoInfo2025.Models
         public bool Active { get; set; }
 
 
-
+        [Display(Name = "Data dodania:")]
         public DateTime AddedDate { get; set; }
 
 
@@ -62,6 +62,7 @@ namespace InfoInfo2025.Models
         public int CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
+        [Display(Name = "Kategoria tesktu:")]
         public Category? Category { get; set; }
 
 
@@ -70,6 +71,7 @@ namespace InfoInfo2025.Models
 
 
         [ForeignKey("UserId")]
+        [Display(Name = "Autor tekstu:")]
         public AppUser ?Author { get; set; }
 
 

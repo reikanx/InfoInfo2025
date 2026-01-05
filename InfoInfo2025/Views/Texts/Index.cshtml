@@ -1,0 +1,45 @@
+﻿@model IEnumerable<InfoInfo2025.Models.Text>
+
+@{
+    ViewData["Title"] = "Lista tekstów";
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Wyszukiwarka -->
+        <div class="d-none d-md-block col-md-12 col-xl-3">
+            <div class="card mt-2 shadow-sm">
+                <div class="card-body">
+                    Wyszukiwarka
+                </div>
+            </div>
+        </div>
+
+        <!--Lista tekstów-->
+        <div class="col-xl-9">
+            @foreach (var item in Model)
+            {       
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h3 class="text-primary">@item.Title</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                            <img src="@Url.Content(String.IsNullOrEmpty(item.Graphic) ? "~/img/mini/" + item.CategoryId + ".jpg" : "~/img/mini/" + item.Graphic)" class="img-fluid" alt="@item.Category?.Name">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h3 class="card-title text-succes">@item.Author?.FullName</h3>
+                            <p class="card-text fst-italic">@item.Summary</p>
+                            <p class="card-text"><small class="text-muted">Opublikowany: @item.AddedDate.ToString("dd.MM.yyyy")</small></p>
+                            <div class="position-relative">
+                                <a href="#" class="btn btn-outline-primary position-absolute bottom-0 end-0">Czytaj >>></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
