@@ -1,6 +1,7 @@
 ﻿using InfoInfo2025.Data;
 using InfoInfo2025.Models;
 using InfoInfo2025.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -76,6 +77,7 @@ namespace InfoInfo2025.Controllers
         }
 
         // GET: List of Texts
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> List()
         {
             var applicationDbContext = _context.Texts.Include(t => t.Author).Include(t => t.Category);
@@ -102,6 +104,7 @@ namespace InfoInfo2025.Controllers
             return View(text);
         }
 
+        [Authorize(Roles = "admin,author")]
         // GET: Texts/Create
         public IActionResult Create()
         {
@@ -110,6 +113,7 @@ namespace InfoInfo2025.Controllers
             return View();
         }
 
+        [Authorize(Roles = "admin,author")]
         // POST: Texts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -121,13 +125,14 @@ namespace InfoInfo2025.Controllers
             {
                 _context.Add(text);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", text.UserId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description", text.CategoryId);
             return View(text);
         }
 
+        [Authorize(Roles = "admin,author")]
         // GET: Texts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -146,6 +151,7 @@ namespace InfoInfo2025.Controllers
             return View(text);
         }
 
+        [Authorize(Roles = "admin,author")]
         // POST: Texts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -176,13 +182,14 @@ namespace InfoInfo2025.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(List));
             }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", text.UserId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description", text.CategoryId);
             return View(text);
         }
 
+        [Authorize(Roles = "admin,author")]
         // GET: Texts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -203,6 +210,7 @@ namespace InfoInfo2025.Controllers
             return View(text);
         }
 
+        [Authorize(Roles = "admin,author")]
         // POST: Texts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -215,7 +223,7 @@ namespace InfoInfo2025.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(List));
         }
 
         private bool TextExists(int id)

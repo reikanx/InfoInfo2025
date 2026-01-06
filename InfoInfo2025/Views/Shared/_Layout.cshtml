@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - InfoInfo2025</title>
     <link rel="stylesheet" href="~/css/bootstrap_colors.min.css" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.6/datatables.min.css" rel="stylesheet" integrity="sha384-Op52dEl5kUgSEZdHZBipbmlFw81qZygnw1QZv+p1KFhUsirA7OJQnkaHgcJmXCTj" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
@@ -41,6 +42,13 @@
                                         <li class="nav-item">
                                         <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Kategorie</a>
                                         </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        @if (User.IsInRole("admin"))
+                                        {
+                                            <li class="nav-item">
+                                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Texts" asp-action="List">Lista tekstów</a>
+                                            </li>
+                                        }
                                     </ul>
                                 </li>
                             }
