@@ -17,27 +17,60 @@ namespace InfoInfo2025.Controllers
         }
 
         // GET: Texts
-        public async Task<IActionResult> Index(int PageNumber = 1)
+        public async Task<IActionResult> Index(string Fraza, string Autor, int? Kategoria, int PageNumber = 1)
         {
             TextIndexViewModel textIndexViewModel = new()
             {
                 TextList = new()
             };
 
-            textIndexViewModel.TextList.TextCount = _context.Texts
-                .Where(t => t.Active == true)
-                .Count();
-
-            textIndexViewModel.TextList.PageNumber = PageNumber;
-
-            textIndexViewModel.Texts = await _context.Texts
+            var SelectedTexts = _context.Texts
                 .Include(t => t.Category)
                 .Include(t => t.Author)
                 .Where(t => t.Active == true)
-                .OrderByDescending(t => t.AddedDate)
+                .OrderByDescending(t => t.AddedDate);
+
+            if (Kategoria != null)
+            {
+                SelectedTexts = (IOrderedQueryable<Text>)SelectedTexts
+                    .Where(r => r.Category.CategoryId == Kategoria);
+            }
+
+            if (!String.IsNullOrEmpty(Autor))
+            {
+                SelectedTexts = (IOrderedQueryable<Text>)SelectedTexts
+                    .Where (r => r.Author.Id == Autor);
+            }
+
+            if (!String.IsNullOrEmpty(Fraza))
+            {
+                SelectedTexts = (IOrderedQueryable<Text>)SelectedTexts
+                    .Where(r => r.Content.Contains(Fraza));
+            }
+
+            textIndexViewModel.TextList.TextCount = SelectedTexts.Count();
+
+            textIndexViewModel.TextList.PageNumber = PageNumber;
+
+            textIndexViewModel.TextList.Author = Autor;
+            textIndexViewModel.TextList.Phrase = Fraza;
+            textIndexViewModel.TextList.Category = Kategoria;
+
+            textIndexViewModel.Texts = await SelectedTexts
                 .Skip((PageNumber - 1) * textIndexViewModel.TextList.PageSize)
                 .Take(textIndexViewModel.TextList.PageSize)
                 .ToListAsync();
+
+            ViewData["Category"] = new SelectList(_context.Categories
+                .Where(c => c.Active == true)
+                .OrderBy (c => c.Name),
+                "CategoryId", "Name", Kategoria);
+
+            ViewData["Author"] = new SelectList(_context.Texts
+                .Include(u => u.Author)
+                .Select(u => u.Author)
+                .Distinct(),
+                "Id", "FullName", Autor);
 
             return View(textIndexViewModel);
         }
