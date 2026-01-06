@@ -14,6 +14,7 @@
         public int? Category { get; set; }
         public string? Author { get; set; }
         public string? Phrase { get; set; }
+        public string? Keyword { get; set; }
 
     }
 }

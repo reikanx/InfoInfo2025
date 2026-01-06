@@ -18,7 +18,7 @@ namespace InfoInfo2025.Controllers
         }
 
         // GET: Texts
-        public async Task<IActionResult> Index(string Fraza, string Autor, int? Kategoria, int PageNumber = 1)
+        public async Task<IActionResult> Index(string Fraza, string Autor, int? Kategoria, string Klucz, int PageNumber = 1)
         {
             TextIndexViewModel textIndexViewModel = new()
             {
@@ -49,6 +49,12 @@ namespace InfoInfo2025.Controllers
                     .Where(r => r.Content.Contains(Fraza));
             }
 
+            if (!String.IsNullOrEmpty(Klucz))
+            {
+                SelectedTexts = (IOrderedQueryable<Text>)SelectedTexts
+                .Where(r => r.Keywords.Contains(Klucz));
+            }
+
             textIndexViewModel.TextList.TextCount = SelectedTexts.Count();
 
             textIndexViewModel.TextList.PageNumber = PageNumber;
@@ -56,6 +62,7 @@ namespace InfoInfo2025.Controllers
             textIndexViewModel.TextList.Author = Autor;
             textIndexViewModel.TextList.Phrase = Fraza;
             textIndexViewModel.TextList.Category = Kategoria;
+            textIndexViewModel.TextList.Keyword = Klucz;
 
             textIndexViewModel.Texts = await SelectedTexts
                 .Skip((PageNumber - 1) * textIndexViewModel.TextList.PageSize)
@@ -72,6 +79,17 @@ namespace InfoInfo2025.Controllers
                 .Select(u => u.Author)
                 .Distinct(),
                 "Id", "FullName", Autor);
+
+            var tags = _context.Texts
+                .AsEnumerable()
+                .Where(t => !string.IsNullOrEmpty(t.Keywords))
+                .SelectMany(t => t.Keywords.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                .Select(k => k.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(k => k)
+                .ToList();
+
+            ViewData["Keyword"] = tags;
 
             return View(textIndexViewModel);
         }
