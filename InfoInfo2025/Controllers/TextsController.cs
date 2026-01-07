@@ -225,7 +225,7 @@ namespace InfoInfo2025.Controllers
             return View(text);
         }
 
-        [Authorize(Roles = "admin,author")]
+        [Authorize(Roles = "admin")]
         // GET: Texts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -246,7 +246,7 @@ namespace InfoInfo2025.Controllers
             return View(text);
         }
 
-        [Authorize(Roles = "admin,author")]
+        [Authorize(Roles = "admin")]
         // POST: Texts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
