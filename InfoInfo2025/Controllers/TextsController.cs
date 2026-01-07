@@ -1,4 +1,5 @@
 ﻿using InfoInfo2025.Data;
+using InfoInfo2025.Infrastructure;
 using InfoInfo2025.Models;
 using InfoInfo2025.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -110,16 +111,33 @@ namespace InfoInfo2025.Controllers
                 return NotFound();
             }
 
-            var text = await _context.Texts
+            var selectedText = await _context.Texts
                 .Include(t => t.Author)
                 .Include(t => t.Category)
-                .FirstOrDefaultAsync(m => m.TextId == id);
-            if (text == null)
+                .Include(t => t.Opinions)
+                .ThenInclude(c => c.Author)
+                .Where(t => t.Active == true && t.TextId == id)
+                .FirstOrDefaultAsync();
+
+            if (selectedText == null)
             {
                 return NotFound();
             }
 
-            return View(text);
+            TextWithOpinions textWithOpinions = new()
+            {
+                SelectedText = selectedText,
+                ReadingTime = (int)Math.Ceiling((double)selectedText.Content.Length / 1400),
+                CommentsCount = selectedText.Opinions.Count
+            };
+
+            textWithOpinions.RatingsCount = textWithOpinions.CommentsCount > 0 ? selectedText.Opinions.Count(x => x.Rating != null) : 0;
+
+            textWithOpinions.AverageRating = textWithOpinions.RatingsCount > 0 ? (float)selectedText.Opinions.Where(x => x.Rating != null).Average(x => (int)x.Rating) : 0f;
+
+            textWithOpinions.Description = Variety.Phrase("komentarz", "komentarze", "komentarzy", textWithOpinions.CommentsCount);
+
+            return View(textWithOpinions);
         }
 
         [Authorize(Roles = "admin,author")]
