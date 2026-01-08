@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InfoInfo2025.Controllers
 {
@@ -128,13 +129,17 @@ namespace InfoInfo2025.Controllers
             {
                 SelectedText = selectedText,
                 ReadingTime = (int)Math.Ceiling((double)selectedText.Content.Length / 1400),
-                CommentsCount = selectedText.Opinions.Count
+                CommentsCount = selectedText.Opinions.Count,
+                NewOpinion = new()
+                {
+                    TextId = selectedText.TextId,
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    Text = selectedText
+                }
             };
 
             textWithOpinions.RatingsCount = textWithOpinions.CommentsCount > 0 ? selectedText.Opinions.Count(x => x.Rating != null) : 0;
-
             textWithOpinions.AverageRating = textWithOpinions.RatingsCount > 0 ? (float)selectedText.Opinions.Where(x => x.Rating != null).Average(x => (int)x.Rating) : 0f;
-
             textWithOpinions.Description = Variety.Phrase("komentarz", "komentarze", "komentarzy", textWithOpinions.CommentsCount);
 
             return View(textWithOpinions);

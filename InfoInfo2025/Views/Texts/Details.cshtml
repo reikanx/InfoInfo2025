@@ -75,9 +75,24 @@
         }
         @if (User.Identity.IsAuthenticated)
         {
-            <a asp-action="Create" asp-controller="Opinions" asp-route-id="@Model?.SelectedText.TextId" class="btn btn-success">Dodaj opinię</a>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newOpinion">Dodaj opinię</button>
         }
     </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="newOpinion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-primary" id="ModalLabel">Dodawanie opinii</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                </div>
+                <div class="modal-body">
+                    <partial name="~/Views/Opinions/_CreatePartial.cshtml" model="@Model.NewOpinion" />
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- KOMENTARZE -->
     <section id="comments">
@@ -119,3 +134,9 @@
 
     </section>
 </div>
+
+@section Scripts {
+@{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -8,6 +8,7 @@
         public int RatingsCount { get; set; }
         public float AverageRating { get; set; }
         public string Description { get; set; }
+        public Opinion NewOpinion { get; set; }
 
         public TextWithOpinions()
         {

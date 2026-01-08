@@ -94,6 +94,25 @@ namespace InfoInfo2025.Controllers
             return View(opinion);
         }
 
+        // POST: Opinions/_CreatePartial
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePartial([Bind("OpinionId,Comment,Rating,TextId,UserId")] Opinion opinion)
+        {
+            if (ModelState.IsValid)
+            {
+                opinion.AddedDate = DateTime.Now;
+                _context.Add(opinion);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", "Texts", new { id = opinion.TextId }, "comments");
+            }
+
+            ViewData["TextTitle"] = opinion.Text?.Title;
+            opinion.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return RedirectToAction("Details", "Texts", new { id = opinion.TextId }, "comments");
+        }
+
         // GET: Opinions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
