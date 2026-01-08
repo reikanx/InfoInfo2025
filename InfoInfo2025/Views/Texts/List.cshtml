@@ -77,9 +77,12 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.Author.FullName)
 				</td>
-				<td>
+				<td width="10%">
 					<a class="btn btn-outline-primary rounded-circle my-1" title="Szczegóły" asp-action="Details" asp-route-id="@item.TextId">
 						<i class="bi-eye" aria-label="Treść tekstu"></i>
+					</a>
+					<a class="btn btn-outline-info rounded-circle my-1" title="Opinie" asp-controller="Opinions" asp-action="Index" asp-route-id="@item.TextId">
+						<i class="bi-chat-left-text" aria-label="Opinie o tekście"></i>
 					</a>
 					<a class="btn btn-outline-warning rounded-circle my-1" title="Edycja" asp-action="Edit" asp-route-id="@item.TextId">
 						<i class="bi-pen-fill" aria-label="Edycja tekstu"></i>

@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<InfoInfo2025.Models.Opinion>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Opinie o tekstach";
 }
 
-<h1>Index</h1>
+<h1 class=" text-primary">Opinie użytkowników</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table" id="opinie">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Text)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comment)
             </th>
@@ -22,10 +22,7 @@
                 @Html.DisplayNameFor(model => model.Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Text)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.Author.FullName)
             </th>
             <th></th>
         </tr>
@@ -33,6 +30,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text.Title)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Comment)
             </td>
@@ -43,17 +43,67 @@
                 @Html.DisplayFor(modelItem => item.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Text.Content)
+                @Html.DisplayFor(modelItem => item.Author.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Author.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.OpinionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OpinionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OpinionId">Delete</a>
+            <a class="btn btn-outline-primary rounded-circle my-1" title="Szczegóły" asp-action="Details" asp-route-id="@item.OpinionId"><i class="bi-eye" aria-label="Treść opinii"></i></a>
+            <a class="btn btn-outline-warning rounded-circle my-1" title="Edycja" asp-action="Edit" asp-route-id="@item.OpinionId"><i class="bi-pen-fill" aria-label="Edycja opinii"></i></a>
+            <a class="btn btn-outline-danger rounded-circle my-1" title="Usuwanie" asp-action="Delete" asp-route-id="@item.OpinionId"><i class="bi-trash" aria-label="Usuwanie opinii"></i></a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+	<script src="https://cdn.datatables.net/v/bs5/dt-2.3.6/datatables.min.js" integrity="sha384-h8drA99ZjRhIv1cyWeNleFRr89bNrnvYdIG5Rc523s5jZLUmObH2k1ZxR8ldNEvJ" crossorigin="anonymous"></script>
+	<script>
+		$(document).ready(function() {
+			$('#opinie').DataTable({
+				language: {
+					"decimal": "",
+					"emptyTable": "Brak danych do wyświetlenia",
+					"info": " Pozycje od _START_ do _END_ z _TOTAL_ rekordów",
+					"infoEmpty": "Pozycji 0 z 0 dostępnych",
+					"infoFiltered": "(filtrowanie z _MAX_ dostępnych pozycji)",
+					"infoPostFix": "",
+					"thousands": " ",
+					"lengthMenu": "Pokaż _MENU_ pozycji",
+					"loadingRecords": "Ładowanie...",
+					"processing": "Przetwarzanie...",
+					"search": "Wyszukaj:",
+					"zeroRecords": "Nie znaleziono danych",
+					"paginate": {
+						"first": "Pierwsza",
+						"last": "Ostatnia",
+						"next": "Następna",
+						"previous": "Poprzednia"
+					},
+					"aria": {
+						"sortAscending": ": sortuje kolumnę rosnąco",
+						"sortDescending": ": sortuje kolumnę malejąco"
+					}
+				},
+				initComplete: function () {
+					this.api().columns().every(function () {
+						var column = this;
+						var header = $(column.header()).text().trim();
+
+						if (header === 'Grafika do tekstu:') {
+							return;
+						}
+
+						var select = $('<input type="text" class="form-control"/>')
+							.attr('placeholder', header)
+							.appendTo($(column.footer()).empty())
+							.on('keyup change clear', function () {
+								if (column.search() !== this.value) {
+									column.search(this.value).draw();
+								}
+							});
+					});
+				}
+			});
+		});
+	</script>
+}

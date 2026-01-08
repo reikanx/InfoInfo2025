@@ -26,7 +26,7 @@ namespace InfoInfo2025.Models
         [Required]
         [Display(Name = "Data dodania:")]
         [DataType(DataType.DateTime)]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime AddedDate { get; set; }
 
 

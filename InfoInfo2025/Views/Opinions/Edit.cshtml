@@ -1,52 +1,33 @@
 ﻿@model InfoInfo2025.Models.Opinion
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edycja opinii";
 }
 
-<h1>Edit</h1>
-
-<h4>Opinion</h4>
+<h1 class="text-primary">Edycja opinii</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+
+<div class="row interspace">
+    <div class="col-md-10">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="OpinionId" />
+            <input asp-for="UserId" type="hidden" />
+            <input asp-for="TextId" type="hidden" />
+            <input asp-for="AddedDate" type="hidden" />
+            <input asp-for="Rating" type="hidden" />
+            <div asp-asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="OpinionId" type="hidden" />
+
             <div class="form-group">
                 <label asp-for="Comment" class="control-label"></label>
                 <textarea asp-for="Comment" class="form-control"></textarea>
                 <span asp-validation-for="Comment" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AddedDate" class="control-label"></label>
-                <input asp-for="AddedDate" class="form-control" />
-                <span asp-validation-for="AddedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TextId" class="control-label"></label>
-                <select asp-for="TextId" class="form-control" asp-items="ViewBag.TextId"></select>
-                <span asp-validation-for="TextId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Zapisz zmiany" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-light"></a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
