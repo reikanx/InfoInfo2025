@@ -45,7 +45,7 @@ namespace InfoInfo2025.Models
 
         [Display(Name = "Grafika do tekstu:")]
         [MaxLength(128)]
-        public string Graphic { get; set; }
+        public string? Graphic { get; set; }
 
 
         [Required]

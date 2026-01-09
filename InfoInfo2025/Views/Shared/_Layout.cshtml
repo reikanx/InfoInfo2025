@@ -27,9 +27,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Texts" asp-action="Index">Teksty</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Polityka prywatności</a>
-                        </li>
 
                         @{
                             if (User.IsInRole("admin") || User.IsInRole("author"))
@@ -50,6 +47,12 @@
                                             </li>
                                             <li class="nav-item">
                                             <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Opinions" asp-action="Index">Lista opinii</a>
+                                            </li>
+                                        }
+                                        @if (User.IsInRole("author"))
+                                        {
+                                            <li class="nav-item">
+                                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="Texts" asp-action="Create">Nowy tekst</a>
                                             </li>
                                         }
                                     </ul>

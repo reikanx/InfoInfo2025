@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.Security.Claims;
 
 namespace InfoInfo2025.Controllers
@@ -13,10 +14,12 @@ namespace InfoInfo2025.Controllers
     public class TextsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private IWebHostEnvironment _hostEnvironment;
 
-        public TextsController(ApplicationDbContext context)
+        public TextsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Texts
@@ -146,35 +149,67 @@ namespace InfoInfo2025.Controllers
         }
 
         [Authorize(Roles = "admin,author")]
+        [HttpGet]
         // GET: Texts/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
             return View();
         }
 
-        [Authorize(Roles = "admin,author")]
+
         // POST: Texts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "admin,author")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TextId,Title,Summary,Keywords,Content,Graphic,Active,AddedDate,CategoryId,UserId")] Text text)
+        public async Task<IActionResult> Create([Bind("TextId,Title,Summary,Keywords,Content,Active,CategoryId")] Text text, IFormFile? picture)
         {
             if (ModelState.IsValid)
             {
+                if (picture != null && picture.Length > 0)
+                {
+                    var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
+                    if (!allowedTypes.Contains(picture.ContentType))
+                    {
+                        ModelState.AddModelError("Graphic", "Niedozwolony typ pliku");
+                        ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId",
+                        "Name", text.CategoryId);
+                        return View(text);
+                    }
+                    else
+                    {
+                        ImageFileUpload imageFileResult = new(_hostEnvironment);
+                        FileSendResult fileSendResult = imageFileResult.SendFile(picture, "img", 600);
+
+                        if (fileSendResult.Success)
+                        {
+                            text.Graphic = fileSendResult.Name;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Graphic", fileSendResult.Error);
+                            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);
+                            return View(text);
+                        }
+                    }
+                }
+
+                text.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                text.AddedDate = DateTime.Now;
                 _context.Add(text);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(List));
+                return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", text.UserId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description", text.CategoryId);
+
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);
             return View(text);
         }
 
-        [Authorize(Roles = "admin,author")]
+
         // GET: Texts/Edit/5
+        [Authorize(Roles = "admin,author")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -187,26 +222,55 @@ namespace InfoInfo2025.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", text.UserId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description", text.CategoryId);
-            return View(text);
+
+            if (string.Compare(User.FindFirstValue(ClaimTypes.NameIdentifier), text.UserId) == 0 || User.IsInRole("admin"))
+            {
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);
+                ViewData["Author"] = text.UserId;
+                return View(text);
+
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            
         }
 
-        [Authorize(Roles = "admin,author")]
         // POST: Texts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        [Authorize(Roles = "admin,author")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TextId,Title,Summary,Keywords,Content,Graphic,Active,AddedDate,CategoryId,UserId")] Text text)
+        public async Task<IActionResult> Edit(int textid, [Bind("TextId,Title,Summary,Keywords,Content,Graphic,Active,AddedDate,CategoryId,UserId")] InfoInfo2025.Models.Text text, IFormFile? picture)
         {
-            if (id != text.TextId)
+            if (textid != text.TextId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                if (picture != null && picture.Length > 0)
+                {
+                    ImageFileUpload imageFileResult = new(_hostEnvironment);
+                    FileSendResult fileSendResult = imageFileResult.SendFile(picture, "img", 600);
+                    if (fileSendResult.Success)
+                    {
+                        text.Graphic = fileSendResult.Name;
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Wybrany plik nie jest obrazkiem!";
+                        ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);
+                        ViewData["Author"] = text.UserId;
+                        return View(text);
+                    }
+                }
+
                 try
                 {
                     _context.Update(text);
@@ -225,8 +289,8 @@ namespace InfoInfo2025.Controllers
                 }
                 return RedirectToAction(nameof(List));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", text.UserId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Description", text.CategoryId);
+            ViewData["Author"] = text.UserId;
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);
             return View(text);
         }
 
