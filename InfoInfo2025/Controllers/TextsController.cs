@@ -287,7 +287,7 @@ namespace InfoInfo2025.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(List));
+                return RedirectToAction(nameof(Index));
             }
             ViewData["Author"] = text.UserId;
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", text.CategoryId);

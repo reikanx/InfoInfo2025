@@ -14,8 +14,24 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="visually-hidden-focusable" aria-label="Skróty nawigacyjne">
+        <a class="visually-hidden-focusable m-2" href="#kategorie">Przejdź do kategorii</a>
+        <a class="visually-hidden-focusable m-2" href="#autorzy">Przejdź do autorów</a>
+        <a class="visually-hidden-focusable m-2" href="#dane">Przejdź do danych adresowych</a>
+    </nav>
+    <header class="container-fluid back">
+        <div class="row text-center col-10 offset-1 col-lg-8 offset-lg-2">
+            <div class="transparency mt-4">
+                <h1 class="display-2 mt-3 text-warning fw-bold">INFORMATYKA</h1>
+                <p class="fs-4 text-light">
+                    Rozwiązuj z nami swoje problemy ze sprzętem i oprogramowaniem. Doskonal się w trudnej sztuce programowania. 
+                    Rozwijaj się i pomagaj innym. Poświęc &frac12; godziny dziennie na zgłębianie tajników informatyki. 
+                </p>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-warning btn-lg fst-italic mt-3 mb-3">Budujemy społeczność informatyków</a>
+            </div>
+        </div>
+    </header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/graphic/logo.png" alt="Logo portalu InfoInfo" height="30" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -62,26 +78,29 @@
 
                     </ul>
                     <form method="get" class="d-flex" role="search" asp-controller="Texts" asp-action="Index" asp-route-PageNumber="1">
-                        <input class="form-control me-2" type="search" placeholder="Wyszukaj..." aria-label="Wyszukaj" />
+                        <input class="form-control me-2" type="search" placeholder="Wyszukaj..." name="Fraza" aria-label="Wyszukaj" />
                         <button class="btn btn-outline-success" type="submit">Szukaj</button>
                     </form>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
-    </header>
     <div class="container-fluid">
-        <main role="main" class="pb-3">
-            <partial name="_CookieConsentPartial" />
+        <partial name="_CookieConsentPartial" />
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container-fluid pt-3 text-center">
-            InfoInfo - Portal informacyjny studentów kierunku Informatyka SWPW w Płocku - &copy; @DateTime.Now.Year
+        <div class="container-fluid bg-back pt-3 pb-2 text-center">
+            <span class="text-light">
+                InfoInfo - Portal informacyjny studentów kierunku Informatyka SWPW w Płocku - &copy; @DateTime.Now.Year
+            </span>
             <p>
-                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-info text-decoration-none">Polityka prywatności</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-info text-decoration-none">
+                    Polityka prywatności
+                </a>
             </p>
         </div>
     </footer>

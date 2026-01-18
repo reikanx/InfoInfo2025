@@ -1,22 +1,89 @@
-﻿@{
+﻿@model InfoInfo2025.Models.ViewModels.HomeDataViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
     ViewData["Title"] = "Strona główna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <!-- KATEGORIE -->
+    <h2 class="visually-hidden" id="kategorie">Kategorie tekstów</h2>
+    <div class="row text-center py-5">
+        @if (Model.DisplayCategories != null)
+        {
+            @foreach (var item in Model.DisplayCategories)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <a class="text-primary text-decoration-none" asp-controller="Texts" asp-action="Index" asp-route-Kategoria="@item.CategoryId">
+                        <i class="bi bi-@item.Icon fs-1"></i>
+                        <h3 class="text-primary-emphasis">@item.Name</h3>
+                    </a>
+                    <p>@item.Description</p>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- AUTORZY -->
+    <h2 class="visually-hidden" id="autorzy">Autorzy tekstów</h2>
+    <div class="row py-5">
+        <div id="carousel-autorzy" class="carousel slide carousel-dark" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel-autorzy" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Autorzy"></button>
+                @for (int i=1; i<= Model.Authors.Count(); i++)
+                {
+                    <button type="button" data-bs-target="#carousel-autorzy" data-bs-slide-to="@i" aria-label="Autor @i"></button>
+                }
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <img src="~/photo/autorzy.jpg" alt="Autorzy tekstów" class="rounded-circle mx-auto d-block" width="250"/>
+                        </div>
+                        <div class="col-lg-8">
+                            <h3 class="fw-bold text-success fs-2">Twórcy portalu</h3>
+                            <p>Z portalem współpracują uznani programiści oraz studenci.</p>
+                        </div>
+                    </div>
+                </div>
+
+                @foreach (var item in Model.Authors)
+                {
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <img src="@Url.Content(item.Photo == null ? "~/photo/user.png" : "~/photo/" + item.Photo)" alt="@item.FullName" class="rounded-circle mx-auto d-block" width="250" />
+                        </div>
+                        <div class="col-lg-8">
+                            <h3 class="fw-bold text-success fs-2">@item.FirstName</h3>
+                            <p>@item.Information</p>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- DANE ADRESOWE -->
+<h2 class="visually-hidden" id="dane">Dane teleadresowe</h2>
+<div class="row bg-back py-5 justify-content-center">
+    <section class="col-md-4">
+        <div class="row ms-3">
+            <div class="ps-5 my-3 col-6 col-md-12">
+                <img src="~/graphic/ikona.png" width="120" alt="InfoInfo" class="rounded-circle" />
+            </div>
+            <div class="my-3 pt-3 col-6 col-md-12 text-light">
+                <p><i class="bi bi-geo-alt-fill me-2"></i>Płock, al. Kilińskiego 12</p>
+                <p><i class="bi bi-telephone-fill me-2"></i> +48 24 366 41 00</p>
+                <p><i class="bi bi-envelope-fill me-2"></i> infoinfo@wlodkowic.pl</p>
+            </div>
+        </div>
+    </section>
 
-
-<button type="button" class="btn btn-primary">Primary</button>
-<button type="button" class="btn btn-secondary">Secondary</button>
-<button type="button" class="btn btn-success">Success</button>
-<button type="button" class="btn btn-danger">Danger</button>
-<button type="button" class="btn btn-warning">Warning</button>
-<button type="button" class="btn btn-info">Info</button>
-<button type="button" class="btn btn-light">Light</button>
-<button type="button" class="btn btn-dark">Dark</button>
-
-<button type="button" class="btn btn-link">Link</button>
-
+    <section class="col-md-8">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d1285.316551493226!2d19.707120258182325!3d52.54512155262533!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x471c7090b9c877d9%3A0x2d43661b0a4753e!2zU1pLT8WBQSBXWcW7U1pBIElNLiBQQVfFgUHigKY!3m2!1d52.544673499999995!2d19.707208899999998!4m5!1s0x471c7090b9c877d9%3A0x2d43661b0a4753e!2saleja%20Jana%20Kili%C5%84skiego%2012%2C%2009-402%20P%C5%82ock!3m2!1d52.544673499999995!2d19.707208899999998!5e0!3m2!1spl!2spl!4v1768758877963!5m2!1spl!2spl" width="100%" height="350px" frameborder="0" style="border:0;" allowfullscreen></iframe>
+    </section>
+</div>
