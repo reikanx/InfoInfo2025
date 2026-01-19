@@ -5,8 +5,15 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Cześć, @User.Identity?.Name!</a>
+    <li class="nav-item dropdown">
+        <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="mx-3">@UserManager.GetUserAsync(User).Result.FirstName</span>
+            <img src="~/photo/@((UserManager.GetUserAsync(User).Result.Photo != null) ? UserManager.GetUserAsync(User).Result.Photo : "user.png")" width="30" alt="Fotografia autora" class="rounded-circle">
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li class="nav-item"><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profil</a></li>
+            <li class="nav-item"><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">Zmiana hasła</a></li>
+        </ul>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
