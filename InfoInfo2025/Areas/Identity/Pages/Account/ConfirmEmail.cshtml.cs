@@ -2,16 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using InfoInfo2025.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace InfoInfo2025.Areas.Identity.Pages.Account
 {
@@ -45,7 +46,7 @@ namespace InfoInfo2025.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            StatusMessage = result.Succeeded ? "Dziękujemy za potwierdzenie adresu e-mail." : "Wystąpił błąd podczas potwierdzania adresu e-mail.Przejdź na stronę logowania i zarządaj ponownego przesłania e-maila potwierdzejącego rejestrację.";
             return Page();
         }
     }
